@@ -1,13 +1,13 @@
-package com.schaefer.architectureplayground
+package com.schaefer.architectureplayground.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.schaefer.architectureplayground.model.Character
+import com.schaefer.architectureplayground.model.Episode
 import com.schaefer.architectureplayground.model.PagedResult
-import com.schaefer.architectureplayground.network.*
-import com.schaefer.architectureplayground.repository.CharactersRepository
+import com.schaefer.architectureplayground.network.ResultWrapper
+import com.schaefer.architectureplayground.repository.LocationsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,22 +15,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(
-    private val charactersRepository: CharactersRepository
+class LocationViewModel @Inject constructor(
+    private val locationsRepository: LocationsRepository
 ) : ViewModel() {
 
-    private val _charactersList = MutableLiveData<ResultWrapper<PagedResult<Character>>>()
-    val charactersList: LiveData<ResultWrapper<PagedResult<Character>>> = _charactersList
+    private val _episodesList = MutableLiveData<ResultWrapper<PagedResult<Episode>>>()
+    val episodesList: LiveData<ResultWrapper<PagedResult<Episode>>> = _episodesList
 
-    fun getCharacters() {
+    fun getEpisodes() {
         viewModelScope.launch(Dispatchers.IO) {
-            charactersRepository.getCharacters().let {
+            locationsRepository.getEpisodes().let {
                 when (it) {
                     is ResultWrapper.GenericError -> Timber.d("ApiEmptyResponse")
                     ResultWrapper.NetworkError -> Timber.d("NetworkError")
                     is ResultWrapper.Success -> {
                         Timber.d(it.value.toString())
-                        _charactersList.postValue(ResultWrapper.Success(it.value))
+                        _episodesList.postValue(ResultWrapper.Success(it.value))
                     }
                 }
             }

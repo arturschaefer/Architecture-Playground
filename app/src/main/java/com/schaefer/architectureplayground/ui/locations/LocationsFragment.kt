@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.schaefer.architectureplayground.R
 import com.schaefer.architectureplayground.databinding.FragmentLocationsBinding
 import com.schaefer.architectureplayground.network.ResultWrapper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import viewLifecycle
 
@@ -19,7 +21,11 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
 
     private var binding: FragmentLocationsBinding by viewLifecycle()
     private val viewModel: LocationsViewModel by viewModels()
-    private val locationsAdapter: LocationsAdapter by lazy { LocationsAdapter() }
+    private val locationsAdapter: LocationsAdapter by lazy {
+        LocationsAdapter(
+            LocationComparator
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +43,9 @@ class LocationsFragment : Fragment(R.layout.fragment_locations) {
     }
 
     private fun setupObservers() {
-        viewModel.episodesList.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResultWrapper.GenericError -> Timber.d("GenericError")
-                ResultWrapper.NetworkError -> Timber.d("NetworkError")
-                is ResultWrapper.Success -> locationsAdapter.locationList = it.value.results
+        viewModel.locationsList.observe(viewLifecycleOwner) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                locationsAdapter.submitData(it)
             }
         }
     }

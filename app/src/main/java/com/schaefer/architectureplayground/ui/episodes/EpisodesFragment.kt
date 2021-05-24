@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.schaefer.architectureplayground.R
 import com.schaefer.architectureplayground.databinding.FragmentEpisodesBinding
 import com.schaefer.architectureplayground.network.ResultWrapper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import viewLifecycle
 
@@ -19,7 +21,9 @@ class EpisodesFragment : Fragment(R.layout.fragment_episodes) {
 
     private var binding: FragmentEpisodesBinding by viewLifecycle()
     private val viewModel: EpisodesViewModel by viewModels()
-    private val episodesAdapter: EpisodesAdapter by lazy { EpisodesAdapter() }
+    private val episodesAdapter: EpisodesAdapter by lazy {
+        EpisodesAdapter(EpisodeComparator)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +42,8 @@ class EpisodesFragment : Fragment(R.layout.fragment_episodes) {
 
     private fun setupObservers() {
         viewModel.episodesList.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResultWrapper.GenericError -> Timber.d("GenericError")
-                ResultWrapper.NetworkError -> Timber.d("NetworkError")
-                is ResultWrapper.Success -> episodesAdapter.episodeList = it.value.results
+            viewLifecycleOwner.lifecycleScope.launch {
+                episodesAdapter.submitData(it)
             }
         }
     }

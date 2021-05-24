@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.schaefer.architectureplayground.R
 import com.schaefer.architectureplayground.databinding.FragmentCharactersBinding
-import com.schaefer.architectureplayground.network.ResultWrapper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import viewLifecycle
 
@@ -20,7 +22,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
     private var binding: FragmentCharactersBinding by viewLifecycle()
     private val viewModel: CharactersViewModel by viewModels()
     private val charactersAdapter: CharactersAdapter by lazy {
-        CharactersAdapter()
+        CharactersAdapter(CharacterComparator)
     }
 
     override fun onCreateView(
@@ -39,14 +41,17 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
     }
 
     private fun setupObservers() {
-        viewModel.charactersList.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResultWrapper.GenericError -> Timber.d("GenericError")
-                ResultWrapper.NetworkError -> Timber.d("NetworkError")
-                is ResultWrapper.Success -> charactersAdapter.characterList = it.value.results
+        viewLifecycleOwner.lifecycleScope.launch {
+            charactersAdapter.loadStateFlow.collectLatest {
+                Timber.tag("CombinedLoadStats").d(it.toString())
             }
         }
+
+        viewModel.charactersList.observe(viewLifecycleOwner) {
+            viewLifecycleOwner.lifecycleScope.launch { charactersAdapter.submitData(it) }
+        }
     }
+
 
     private fun setupView() {
         binding.rvCharacters.apply {

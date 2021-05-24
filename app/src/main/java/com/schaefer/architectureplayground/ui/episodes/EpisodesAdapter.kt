@@ -2,24 +2,15 @@ package com.schaefer.architectureplayground.ui.episodes
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.schaefer.architectureplayground.databinding.ItemTileTextBinding
 import com.schaefer.architectureplayground.model.Episode
 
-class EpisodesAdapter : RecyclerView.Adapter<EpisodesAdapter.TileViewHolder>() {
+class EpisodesAdapter(diffUtil: DiffUtil.ItemCallback<Episode>) :
+    PagingDataAdapter<Episode, EpisodesAdapter.TileViewHolder>(diffUtil) {
 
-    var episodeList = emptyList<Episode>()
-        set(value) {
-            val result = DiffUtil.calculateDiff(
-                EpisodesDiffCallback(
-                    field,
-                    value
-                )
-            )
-            result.dispatchUpdatesTo(this)
-            field = value
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TileViewHolder {
         val binding = ItemTileTextBinding
@@ -27,12 +18,10 @@ class EpisodesAdapter : RecyclerView.Adapter<EpisodesAdapter.TileViewHolder>() {
         return TileViewHolder(binding)
     }
 
-    override fun getItemCount() = episodeList.size
-
     override fun onBindViewHolder(holder: TileViewHolder, position: Int) {
         with(holder) {
-            with(episodeList[position]) {
-                binding.tvItemTileTitle.text = this.name
+            with(getItem(position)) {
+                binding.tvItemTileTitle.text = this?.name
 
                 holder.itemView.setOnClickListener {
                     // TODO
@@ -43,5 +32,4 @@ class EpisodesAdapter : RecyclerView.Adapter<EpisodesAdapter.TileViewHolder>() {
 
     inner class TileViewHolder(val binding: ItemTileTextBinding) :
         RecyclerView.ViewHolder(binding.root)
-
 }

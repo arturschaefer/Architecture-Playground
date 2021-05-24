@@ -2,24 +2,14 @@ package com.schaefer.architectureplayground.ui.locations
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.schaefer.architectureplayground.databinding.ItemTileTextBinding
 import com.schaefer.architectureplayground.model.Location
 
-class LocationsAdapter : RecyclerView.Adapter<LocationsAdapter.TileViewHolder>() {
-
-    var locationList = emptyList<Location>()
-        set(value) {
-            val result = DiffUtil.calculateDiff(
-                LocationsDiffCallback(
-                    field,
-                    value
-                )
-            )
-            result.dispatchUpdatesTo(this)
-            field = value
-        }
+class LocationsAdapter(diffUtil: DiffUtil.ItemCallback<Location>) :
+    PagingDataAdapter<Location, LocationsAdapter.TileViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TileViewHolder {
         val binding = ItemTileTextBinding
@@ -27,12 +17,10 @@ class LocationsAdapter : RecyclerView.Adapter<LocationsAdapter.TileViewHolder>()
         return TileViewHolder(binding)
     }
 
-    override fun getItemCount() = locationList.size
-
     override fun onBindViewHolder(holder: TileViewHolder, position: Int) {
         with(holder) {
-            with(locationList[position]) {
-                binding.tvItemTileTitle.text = this.name
+            with(getItem(position)) {
+                binding.tvItemTileTitle.text = this?.name
 
                 holder.itemView.setOnClickListener {
                     // TODO

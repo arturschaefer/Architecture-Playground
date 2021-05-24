@@ -2,8 +2,8 @@ package com.schaefer.architectureplayground.di
 
 import com.schaefer.architectureplayground.BuildConfig
 import com.schaefer.architectureplayground.network.RickAndMortyApi
-import com.schaefer.architectureplayground.network.RickAndMortyApiDataSource
-import com.schaefer.architectureplayground.network.RickAndMortyApiDataSourceImpl
+import com.schaefer.architectureplayground.network.datasource.RickAndMortyApiDataSource
+import com.schaefer.architectureplayground.network.datasource.RickAndMortyApiDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -67,6 +67,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
 
+    //Paging3
+    implementation "androidx.paging:paging-runtime:$versions.paging3"
+
     //Square
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"

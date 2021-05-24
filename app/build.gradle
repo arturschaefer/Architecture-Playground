@@ -62,9 +62,13 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$versions.activity"
     implementation "com.google.android.material:material:$versions.material"
     implementation "androidx.cardview:cardview:$versions.cardview"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+
+    //Paging3
+    implementation "androidx.paging:paging-runtime:$versions.paging3"
 
     //Square
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
@@ -77,7 +81,13 @@ dependencies {
 
     //Hilt
     implementation "com.google.dagger:hilt-android:$versions.hilt"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     kapt "com.google.dagger:hilt-android-compiler:$versions.hilt"
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$versions.glide"
+    annotationProcessor "com.github.bumptech.glide:compiler:$versions.glide"
 
 
     //Tests

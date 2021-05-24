@@ -29,7 +29,7 @@ ext.versions = [
         navigation             : '2.2.2',
         nav_args               : '2.3.1',
         lifecycle              : '2.2.0',
-        paging3                : '3.0.0-beta01',
+        paging3                : '3.0.0',
 
         //RxJava
         rxjava                 : '3.0.0',
@@ -38,7 +38,7 @@ ext.versions = [
         timber                 : '4.7.1',
 
         //Glide
-        glide                  : '4.11.0',
+        glide                  : '4.12.0',
 
         //Network
         okhttp                 : '4.7.2',

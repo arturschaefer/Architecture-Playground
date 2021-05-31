@@ -1,4 +1,4 @@
-name: Master branch CI
+name: Deploy CI
 
 on:
   pull_request:
